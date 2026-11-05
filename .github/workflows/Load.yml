@@ -28,7 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install -r elt/requirements.txt
+          pip install -r requirements.txt
 
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
@@ -42,4 +42,4 @@ jobs:
           BIGQUERY_DATASET: 'kfd_landing'
           LOAD_MODE: ${{ inputs.load_mode || 'full_refresh' }}
         run: |
-          python elt/load_data.py
+          python load_data.py
