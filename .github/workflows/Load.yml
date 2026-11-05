@@ -1,0 +1,45 @@
+name: Neon to BigQuery ETL
+
+on:
+  workflow_dispatch:
+    inputs:
+      load_mode:
+        description: 'Tryb ladowania danych (full_refresh / incremental)'
+        required: true
+        default: 'full_refresh'
+        type: choice
+        options:
+          - full_refresh
+          - incremental
+
+jobs:
+  extract-and-load:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          pip install -r elt/requirements.txt
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Run ETL Script
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          GCP_PROJECT_ID: 'TUTAJ_WPISZ_SWOJ_PROJECT_ID'  # np. kfd-data-warehouse-123456
+          BIGQUERY_DATASET: 'kfd_landing'
+          LOAD_MODE: ${{ inputs.load_mode || 'full_refresh' }}
+        run: |
+          python elt/load_data.py
