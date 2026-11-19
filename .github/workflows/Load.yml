@@ -38,7 +38,7 @@ jobs:
       - name: Run ETL Script
         env:
           NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
-          GCP_PROJECT_ID: 'TUTAJ_WPISZ_SWOJ_PROJECT_ID'  # np. kfd-data-warehouse-123456
+          GCP_PROJECT_ID: 'inzyniernia-danych'  # np. kfd-data-warehouse-123456
           BIGQUERY_DATASET: 'kfd_landing'
           LOAD_MODE: ${{ inputs.load_mode || 'full_refresh' }}
         run: |
